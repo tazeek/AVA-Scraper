@@ -27,6 +27,9 @@ def extractPage(url):
 
 def getRatings(url):
 
+	# The ratings should be in a JSON file
+	ratings_json = {}
+
 	# Extract using BeautifulSoup
 	soup_ratings = extractPage(url)
 
@@ -42,14 +45,19 @@ def getRatings(url):
 
 	# Return 'None' if no statistic table found
 	if len(tbls) < 1:
-		print("NO STATISTICS")
 		return None
 
 	# Extract ratings from the table
-	ratings = [float(b.next_sibling) for b in tbls[1].findAll('b') if 'Avg' in b.text]
-	print(ratings)
+	ratings_array = [float(b.next_sibling) for b in tbls[1].findAll('b') if 'Avg' in b.text]
+	
+	ratings_json['all']				= ratings_array[0]
+	ratings_json['commenters']		= ratings_array[1]
+	ratings_json['participants']	= ratings_array[2]
+	ratings_json['non-participants']= ratings_array[3]
 
-	return ratings
+	print(ratings_json)
+
+	return ratings_json
 
 def getComments(url):
 
@@ -117,6 +125,12 @@ def downloadImages():
 
 		# Get the image link
 		image_link = getImageURL(url)
+
+		# Get image ratings
+		image_ratings = getRatings(url)
+
+		# Get image comments
+
 
 		if image_link is not None:
 
