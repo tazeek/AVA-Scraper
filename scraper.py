@@ -30,12 +30,26 @@ def getRatings(url):
 	# Extract using BeautifulSoup
 	soup_ratings = extractPage(url)
 
-	# Extract ratings
-	ratings = soup_ratings.find(text='Statistics')
+	# Extract tables from the page
+	# NOTE: 'Photograph Information' will ALWAYS be extracted (Index 0)
+	# If a photograph has statistics, the array will be a size of 2
+	tbls = soup_ratings.findAll(
+		lambda tag:
+		'width' in tag.attrs and
+		'cellpadding' in tag.attrs and
+		tag.attrs['width'] == '750'
+	)
 
+	# Return 'None' if no statistic table found
+	if len(tbls) < 1:
+		print("NO STATISTICS")
+		return None
+
+	# Extract ratings from the table
+	ratings = [float(b.next_sibling) for b in tbls[1].findAll('b') if 'Avg' in b.text]
 	print(ratings)
 
-	return
+	return ratings
 
 def getComments(url):
 
