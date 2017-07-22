@@ -5,6 +5,12 @@ import urllib.request
 import requests
 import re
 
+# Variables to specify which data (image, comments, ...) should be downloaded
+DOWNLOAD_IMAGES = True
+DOWNLOAD_COMMENTS = True
+DOWNLOAD_RATINGS = True
+DOWNLOAD_META = True
+
 def getLatestImageID():
 
 	# URL for recently uploaded images
