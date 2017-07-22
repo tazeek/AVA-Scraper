@@ -11,14 +11,11 @@ DOWNLOAD_COMMENTS = True
 DOWNLOAD_RATINGS = True
 DOWNLOAD_META = True
 
-# The last Image ID in AVA 1.0
+# AVA-related variables
 AVA_LAST_ID = 958297
+AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
 
-def getImageURL():
-
-	return
-
-def getLatestImageID(url):
+def getImageURL(url):
 
 	# Load using requests
 	requests_gallery = requests.get(url)
@@ -40,30 +37,50 @@ def getLatestImageID(url):
 	# The latest image is always at index 0
 	image_link = imgs[0]['src']
 
+	return image_link
+
+def getLatestImageID(url):
+
+	# Get the ID
+	latest_image_link = getImageURL(url)
+
 	# Split the URL string via '/'
 	# The image ID is in the last index of the split link
-	latest_image_id = image_link.split('/')[-1]
+	latest_image_id = latest_image_link.split('/')[-1]
 
 	# Extract the ID
 	latest_image_id = re.findall('\d+', latest_image_id)[0]
 
-	return latest_image_id
+	return int(latest_image_id)
 
 def downloadImages():
 
 	# Get the latest Image ID from DPChallenge
 	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
 
-	for id in range(10+1, 20+1):
-		print(id)
+	'''
+	for image_id in range(10+1, 20+1):
+
+		# Get the image page URL
+		url = AVA_URL_FOR_ID.format(image_id)
+
+		# Get the image link
+		image_link = getImageURL(url)
+		print(url)
+
+		# Specify filepath
+		FILEPATH = 'AVA 2.0 Images/' + image_id + '.jpg'
+
+		# To save images
+		urllib.request.urlretrieve(image_link, FILEPATH)
+		'''
 
 # Download Images
 if DOWNLOAD_IMAGES:
 	downloadImages()
 
 # FOR IMAGE ID
-# AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
 # dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
 
 #print(imgs[0]['src'])
-#urllib.request.urlretrieve(imgs[0]['src'], "local-filename.jpg")
+#
