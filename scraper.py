@@ -33,8 +33,12 @@ def getImageURL(url):
         tag.attrs['src'].find('thumb') < 0
     )
 
-	# The page displays the 50 latest images
+	# The page displays the 50 latest images (For 'Recently Uploaded')
 	# The latest image is always at index 0
+	# NOTE: If no images are found, return None and handle the case
+	if len(imgs) == 0:
+		return None
+
 	image_link = imgs[0]['src']
 
 	return image_link
@@ -57,6 +61,15 @@ def downloadImages():
 
 	# Get the latest Image ID from DPChallenge
 	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
+	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
+
+	image_link = getImageURL(dummy)
+
+	if image_link is not None:
+
+		FILEPATH = 'AVA 2.0 Images/1201649.jpg'
+		urllib.request.urlretrieve(image_link, FILEPATH)
+	print(image_link)
 
 	'''
 	for image_id in range(10+1, 20+1):
@@ -69,9 +82,9 @@ def downloadImages():
 		print(url)
 
 		# Specify filepath
-		FILEPATH = 'AVA 2.0 Images/' + image_id + '.jpg'
+		FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
 
-		# To save images
+		# To download save images
 		urllib.request.urlretrieve(image_link, FILEPATH)
 		'''
 
@@ -80,7 +93,4 @@ if DOWNLOAD_IMAGES:
 	downloadImages()
 
 # FOR IMAGE ID
-# dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
-
-#print(imgs[0]['src'])
-#
+# 
