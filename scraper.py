@@ -11,13 +11,17 @@ DOWNLOAD_COMMENTS = True
 DOWNLOAD_RATINGS = True
 DOWNLOAD_META = True
 
-def getLatestImageID():
+# The last Image ID in AVA 1.0
+AVA_LAST_ID = 958297
 
-	# URL for recently uploaded images
-	IMAGE_GALLERY_URL = 'http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded'
+def getImageURL():
+
+	return
+
+def getLatestImageID(url):
 
 	# Load using requests
-	requests_gallery = requests.get(IMAGE_GALLERY_URL)
+	requests_gallery = requests.get(url)
 
 	# HTML Extraction using BeautifulSoup
 	soup_gallery = BeautifulSoup(requests_gallery.text, 'lxml')
@@ -43,38 +47,23 @@ def getLatestImageID():
 	# Extract the ID
 	latest_image_id = re.findall('\d+', latest_image_id)[0]
 
-	print(latest_image_id)
+	return latest_image_id
 
+def downloadImages():
 
-# Get latest image ID
-getLatestImageID()
-exit()
+	# Get the latest Image ID from DPChallenge
+	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
 
-# The last Image ID in AVA 1.0
-AVA_LAST_ID = 958297
+	for id in range(10+1, 20+1):
+		print(id)
+
+# Download Images
+if DOWNLOAD_IMAGES:
+	downloadImages()
 
 # FOR IMAGE ID
 # AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
 # dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
-
-print("\n")
-# Load using requests
-#r = requests.get(dummy)
-
-# Extract and, if needed for viewing, prettify
-# NOTE: Every url from dpchallenge.com has information encoded in 'ISO-8859-1/latin-1'
-#soup = BeautifulSoup(r.text, 'lxml')
-#soup = soup.prettify('latin-1')
-
-# Extracting the image
-#imgs = soup.findAll(
-#        lambda tag:
-#        'alt' in tag.attrs and
-#        'src' in tag.attrs and
-#        tag.attrs['src'].startswith('http://images.dpchallenge.com/')
-#        and 'style' in tag.attrs and
-#        tag.attrs['src'].find('thumb') < 0
-#    )
 
 #print(imgs[0]['src'])
 #urllib.request.urlretrieve(imgs[0]['src'], "local-filename.jpg")
