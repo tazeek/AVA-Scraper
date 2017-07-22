@@ -15,26 +15,49 @@ DOWNLOAD_META = True
 AVA_LAST_ID = 958297
 AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
 
-def getImageURL(url):
+def extractPage(url):
 
 	# Load using requests
 	requests_gallery = requests.get(url)
 
 	# HTML Extraction using BeautifulSoup
-	soup_gallery = BeautifulSoup(requests_gallery.text, 'lxml')
+	page_extract = BeautifulSoup(requests_gallery.text, 'lxml')
+
+	return page_extract
+
+def getRatings(url):
+
+	# Extract using BeautifulSoup
+	soup_ratings = extractPage(url)
+
+	# Extract ratings
+	ratings = soup_ratings.find(text='Statistics')
+
+	print(ratings)
+
+	return
+
+def getComments(url):
+
+	return 
+
+def getImageURL(url):
+
+	# Extract using BeautifulSoup
+	soup_image = extractPage(url)
 
 	# Extract images
-	imgs = soup_gallery.findAll(
+	imgs = soup_image.findAll(
         lambda tag:
         'alt' in tag.attrs and
         'src' in tag.attrs and
-        tag.attrs['src'].startswith('http://images.dpchallenge.com/')
-        and 'style' in tag.attrs and
+        'style' in tag.attrs and
+        tag.attrs['src'].startswith('http://images.dpchallenge.com/') and
         tag.attrs['src'].find('thumb') < 0
     )
 
 	# The page displays the 50 latest images (For 'Recently Uploaded')
-	# The latest image is always at index 0
+	# The latest (or only) image is always at index 0
 	# NOTE: If no images are found, return None and handle the case
 	if len(imgs) == 0:
 		return None
@@ -63,13 +86,14 @@ def downloadImages():
 	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
 	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
 
-	image_link = getImageURL(dummy)
+	#image_link = getImageURL(dummy)
+	image_ratings = getRatings(dummy)
 
-	if image_link is not None:
+	#if image_link is not None:
 
-		FILEPATH = 'AVA 2.0 Images/1201649.jpg'
-		urllib.request.urlretrieve(image_link, FILEPATH)
-	print(image_link)
+	#	FILEPATH = 'AVA 2.0 Images/1201649.jpg'
+	#	urllib.request.urlretrieve(image_link, FILEPATH)
+	#print(image_link)
 
 	'''
 	for image_id in range(10+1, 20+1):
@@ -79,14 +103,15 @@ def downloadImages():
 
 		# Get the image link
 		image_link = getImageURL(url)
-		print(url)
 
-		# Specify filepath
-		FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
+		if image_link is not None:
 
-		# To download save images
-		urllib.request.urlretrieve(image_link, FILEPATH)
-		'''
+			# Specify filepath
+			FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
+
+			# To download save images
+			urllib.request.urlretrieve(image_link, FILEPATH)
+	'''
 
 # Download Images
 if DOWNLOAD_IMAGES:
