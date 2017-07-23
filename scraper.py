@@ -63,6 +63,25 @@ def getComments(url):
 	# Extract page using BeautifulSoup
 	soup_comments = extractPage(url)
 
+	# Comments are in table format
+	cmmts_tbls = soup_comments.findAll(
+		lambda tag:
+		'cellspacing' in tag.attrs and
+		'cellpadding' in tag.attrs and
+		tag.attrs['cellspacing'] == '0' and
+		tag.attrs['cellpadding'] == '4'
+	)
+
+	# Loop over table by table
+	for table in cmmts_tbls:
+
+		# Extract the row, followed by the row's data
+		row_data = table.find('tr').find('td')
+
+		print(row_data.text)
+		print("\n\n")
+	exit()
+
 	return image_comments
 
 def getImageURL(url):
@@ -145,11 +164,12 @@ def scraping():
 
 	# Get the latest Image ID from DPChallenge
 	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
-	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=106'
+	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
 
 	#image_link = getImageURL(dummy)
+	image_comments = getComments(dummy)
 	#image_ratings = getRatings(dummy)
-	image_meta = getMetadata(dummy)
+	#image_meta = getMetadata(dummy)
 
 
 	#if image_link is not None:
@@ -187,4 +207,4 @@ def scraping():
 	'''
 
 # Scraping starts here
-scraping
+scraping()
