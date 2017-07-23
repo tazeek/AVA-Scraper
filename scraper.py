@@ -50,18 +50,22 @@ def getRatings(url):
 	# Extract ratings from the table
 	ratings_array = [float(b.next_sibling) for b in tbls[1].findAll('b') if 'Avg' in b.text]
 	
-	ratings_json['all']				= ratings_array[0]
-	ratings_json['commenters']		= ratings_array[1]
-	ratings_json['participants']	= ratings_array[2]
+	ratings_json['all'] = ratings_array[0]
+	ratings_json['commenters'] = ratings_array[1]
+	ratings_json['participants'] = ratings_array[2]
 	ratings_json['non-participants']= ratings_array[3]
-
-	print(ratings_json)
 
 	return ratings_json
 
 def getComments(url):
 
-	return 
+	# Comments are to be stored in an array
+	image_comments = []
+
+	# Extract page using BeautifulSoup
+	soup_comments = extractPage(url)
+
+	return image_comments
 
 def getImageURL(url):
 
@@ -87,6 +91,20 @@ def getImageURL(url):
 	image_link = imgs[0]['src']
 
 	return image_link
+
+def getMetadata(url):
+
+	# Meta data is to be stored in a json format
+	image_meta = {}
+	
+	# Extract using BeautifulSoup
+	soup_meta = extractPage(url)
+
+	# Extract Challenge ID
+
+	# Extract Semantic Tags
+
+	return image_meta
 
 def getLatestImageID(url):
 
@@ -130,6 +148,7 @@ def downloadImages():
 		image_ratings = getRatings(url)
 
 		# Get image comments
+		image_comments = getComments(url)
 
 
 		if image_link is not None:
@@ -144,6 +163,3 @@ def downloadImages():
 # Download Images
 if DOWNLOAD_IMAGES:
 	downloadImages()
-
-# FOR IMAGE ID
-# 
