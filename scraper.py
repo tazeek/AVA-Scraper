@@ -96,11 +96,23 @@ def getMetadata(url):
 
 	# Meta data is to be stored in a json format
 	image_meta = {}
-	
+
 	# Extract using BeautifulSoup
 	soup_meta = extractPage(url)
 
 	# Extract Challenge ID
+	challenge = soup_meta.find(
+		lambda tag:
+		'href' in tag.attrs and
+		tag.attrs['href'].startswith('/challenge_results.php')
+	)
+
+	# Store the challenge ID in the format 'ID: Challenge Name'
+	challenge_name = challenge.text
+	challenge_id = re.findall('\d+', challenge['href'])[0]
+
+	image_meta['Challenge Name'] = challenge_name
+	image_meta['Challenge ID'] = challenge_id
 
 	# Extract Semantic Tags
 
@@ -127,7 +139,9 @@ def downloadImages():
 	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
 
 	#image_link = getImageURL(dummy)
-	image_ratings = getRatings(dummy)
+	#image_ratings = getRatings(dummy)
+	image_meta = getMetadata(dummy)
+
 
 	#if image_link is not None:
 
@@ -149,6 +163,9 @@ def downloadImages():
 
 		# Get image comments
 		image_comments = getComments(url)
+
+		# Get image metadata
+		image_meta = getMetadata(url)
 
 
 		if image_link is not None:
