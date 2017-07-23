@@ -5,12 +5,6 @@ import urllib.request
 import requests
 import re
 
-# Variables to specify which data (image, comments, ...) should be downloaded
-DOWNLOAD_IMAGES = True
-DOWNLOAD_COMMENTS = True
-DOWNLOAD_RATINGS = True
-DOWNLOAD_META = True
-
 # AVA-related variables
 AVA_LAST_ID = 958297
 AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
@@ -147,7 +141,7 @@ def getLatestImageID(url):
 
 	return int(latest_image_id)
 
-def downloadImages():
+def scraping():
 
 	# Get the latest Image ID from DPChallenge
 	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
@@ -192,6 +186,5 @@ def downloadImages():
 			urllib.request.urlretrieve(image_link, FILEPATH)
 	'''
 
-# Download Images
-if DOWNLOAD_IMAGES:
-	downloadImages()
+# Scraping starts here
+scraping
