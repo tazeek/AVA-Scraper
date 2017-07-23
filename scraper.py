@@ -83,11 +83,18 @@ def getComments(url):
 		if row_data.find('table'):
 			for table in row_data.findAll('table'):
 				table.extract()
-			
-		print(row_data.text)
 		
-		print("\n\n")
-	exit()
+		# Get the comment here
+		comment = row_data.text
+
+		# Some comments are edited and the datastamp of edited message is extracted
+		comment = re.sub(r"Message edited by author .*", '', comment)
+
+		# Some comments have urls
+		comment = re.sub(r'^https?:\/\/.*[\r\n]*', '', comment, flags=re.MULTILINE)
+		
+		# Append the cleaned comment
+		image_comments.append(comment)
 
 	return image_comments
 
