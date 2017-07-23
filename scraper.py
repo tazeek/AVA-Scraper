@@ -78,7 +78,14 @@ def getComments(url):
 		# Extract the row, followed by the row's data
 		row_data = table.find('tr').find('td')
 
+		# Check if there is a table in the row (Ex. Replies to another comment)
+		# If there is, delete it
+		if row_data.find('table'):
+			for table in row_data.findAll('table'):
+				table.extract()
+			
 		print(row_data.text)
+		
 		print("\n\n")
 	exit()
 
@@ -164,7 +171,7 @@ def scraping():
 
 	# Get the latest Image ID from DPChallenge
 	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
-	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=1201649'
+	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=106'
 
 	#image_link = getImageURL(dummy)
 	image_comments = getComments(dummy)
