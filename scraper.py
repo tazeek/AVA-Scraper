@@ -49,6 +49,10 @@ def getRatings(url):
 
 	# Extract ratings from the table
 	ratings_array = [float(b.next_sibling) for b in tbls[1].findAll('b') if 'Avg' in b.text]
+
+	# If there are no ratings, it means the image was disqualified
+	if len(ratings_array) == 0:
+		return None
 	
 	ratings_json['all'] = ratings_array[0]
 	ratings_json['commenters'] = ratings_array[1]
