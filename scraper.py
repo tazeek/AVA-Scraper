@@ -19,13 +19,10 @@ def extractPage(url):
 
 	return page_extract
 
-def getRatings(url):
+def getRatings(soup_ratings):
 
 	# The ratings should be in a JSON file
 	ratings_json = {}
-
-	# Extract using BeautifulSoup
-	soup_ratings = extractPage(url)
 
 	# Extract tables from the page
 	# NOTE: 'Photograph Information' will ALWAYS be extracted (Index 0)
@@ -55,13 +52,10 @@ def getRatings(url):
 
 	return ratings_json
 
-def getComments(url):
+def getComments(soup_comments):
 
 	# Comments are to be stored in an array
 	image_comments = []
-
-	# Extract page using BeautifulSoup
-	soup_comments = extractPage(url)
 
 	# Comments are in table format
 	cmmts_tbls = soup_comments.findAll(
@@ -96,12 +90,11 @@ def getComments(url):
 		# Append the cleaned comment
 		image_comments.append(comment)
 
+	print(image_comments)
+
 	return image_comments
 
-def getImageURL(url):
-
-	# Extract using BeautifulSoup
-	soup_image = extractPage(url)
+def getImageURL(soup_image):
 
 	# Extract images
 	imgs = soup_image.findAll(
@@ -158,7 +151,7 @@ def getMetadata(url):
 
 		semantic_json[semantic_id] = semantic_name
 
-	return image_meta
+	return challenge_json, semantic_json
 
 def getLatestImageID(url):
 
@@ -180,45 +173,42 @@ def scraping():
 	latest_image_id = getLatestImageID('http://www.dpchallenge.com/photo_browse.php?view=recentlyuploaded')
 	dummy = 'http://www.dpchallenge.com/image.php?IMAGE_ID=106'
 
+	# Variable for counting purposes
+	count = 0
+
 	#image_link = getImageURL(dummy)
-	image_comments = getComments(dummy)
+	#image_comments = getComments(dummy)
 	#image_ratings = getRatings(dummy)
 	#image_meta = getMetadata(dummy)
 
-
-	#if image_link is not None:
-
-	#	FILEPATH = 'AVA 2.0 Images/1201649.jpg'
-	#	urllib.request.urlretrieve(image_link, FILEPATH)
-	#print(image_link)
-
-	'''
-	for image_id in range(10+1, 20+1):
+	for image_id in range(AVA_LAST_ID+1, latest_image_id+1):
 
 		# Get the image page URL
 		url = AVA_URL_FOR_ID.format(image_id)
 
+		# Extract Page
+		page_extract = extractPage(url)
+
 		# Get the image link
-		image_link = getImageURL(url)
+		image_link = getImageURL(page_extract)
 
 		# Get image ratings
-		image_ratings = getRatings(url)
+		image_ratings = getRatings(page_extract)
 
 		# Get image comments
-		image_comments = getComments(url)
+		image_comments = getComments(page_extract)
 
 		# Get image metadata
-		image_meta = getMetadata(url)
+		image_meta = getMetadata(page_extract)
 
 
-		if image_link is not None:
+		if image_link is not None and image_ratings is not None:
 
 			# Specify filepath
-			FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
+			#FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
 
 			# To download save images
-			urllib.request.urlretrieve(image_link, FILEPATH)
-	'''
+			#urllib.request.urlretrieve(image_link, FILEPATH)
 
 # Scraping starts here
 scraping()
