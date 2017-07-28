@@ -1,4 +1,4 @@
-from scraper import extractPage
+#from scraper import extractPage
 
 import urllib.request
 import requests
@@ -9,14 +9,20 @@ import time
 def getLastChallenge():
 
 	# Last challenge to be stored in this variable
+	last_challenge_id = None
 
 	# Read the text file
+	with open('challenges.txt') as file:
 
-	# 1 line = Challenge ID followed by Challenge Name
+		# 1 line = Challenge ID followed by Challenge Name
+		for line in file:
+			challenge_info = line.split()
 
-	# Compare with current number
+			# Compare with current number
+			if (last_challenge_id is None) or (last_challenge_id < int(challenge_info[0])):
+				last_challenge_id = int(challenge_info[0])
 
-	return 
+	return last_challenge_id
 
 # Scrape the challenge page (ALL results)
 def scrapeChallengePage(url):
@@ -36,3 +42,5 @@ def scrapeChallengePage(url):
 	# Add in the entries (Rough idea of new photographs)
 
 	return
+
+getLastChallenge()

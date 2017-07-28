@@ -203,7 +203,7 @@ def scraping():
 		#image_meta = getMetadata(page_extract)
 
 
-		if image_link is not None and image_ratings is not None:
+		#if image_link is not None and image_ratings is not None:
 
 			# Specify filepath
 			#FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
@@ -213,6 +213,8 @@ def scraping():
 
 		# Delay request by 60s (see robots.txt)
 		time.delay(60)
+
+	return
 
 # Scraping starts here
 scraping()
