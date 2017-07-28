@@ -50,12 +50,17 @@ def scrapeChallengePage(url, stop_id):
 	# JSON File
 	new_challenge_dict = {}
 
+	# Number of pictures 
+	pictures_new = 0
+
+	'''
 	# Find all rows (Each row is one challenge)
 	challenge_rows = challenge_page.findAll(
 		lambda tag:
 		'href' in tag.attrs and
 		tag.attrs['href'].startswith('/challenge_results.php')
 	)
+
 
 	# Loop challenge by challenge 
 	for row in challenge_rows:
@@ -79,8 +84,30 @@ def scrapeChallengePage(url, stop_id):
 		for key, value in new_challenge_dict.items():
 			print(key, " ", value)
 			outfile.write(str(key) + " " + value + "\n")
+	'''
 
+	'''
 	# Add in the entries (Rough idea of new photographs)
+	# This area can be used for metadata purposes
+	challenge_rows = challenge_page.findAll(
+		lambda tag:
+		'id' in tag.attrs and
+		tag.attrs['id'] == 'challenges'
+	)[1].findChildren('tr')
+
+	challenge_rows.pop(0)
+
+	for i,row in enumerate(challenge_rows):
+
+		if i == 1080:
+			break
+		
+		row_td = row.findChildren('td', {'align': 'center'})
+
+		pictures_new += int(row_td[0].text)
+
+	'''
+
 	time.sleep(60)
 	exit()
 
@@ -92,8 +119,6 @@ ava_last_id = getLastChallenge()
 # Scrape Challenge Page
 url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
 scrapeChallengePage(url, ava_last_id)
-
-# Save in text file format
 
 # Extract Images from each challenge 
 
