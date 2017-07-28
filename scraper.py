@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import urllib.request
 import requests
 import re
+import time
 
 # AVA-related variables
 AVA_LAST_ID = 958297
@@ -184,22 +185,22 @@ def scraping():
 	for image_id in range(AVA_LAST_ID+1, latest_image_id+1):
 
 		# Get the image page URL
-		url = AVA_URL_FOR_ID.format(image_id)
+		#url = AVA_URL_FOR_ID.format(image_id)
 
 		# Extract Page
-		page_extract = extractPage(url)
+		#page_extract = extractPage(url)
 
 		# Get the image link
-		image_link = getImageURL(page_extract)
+		#image_link = getImageURL(page_extract)
 
 		# Get image ratings
-		image_ratings = getRatings(page_extract)
+		#image_ratings = getRatings(page_extract)
 
 		# Get image comments
-		image_comments = getComments(page_extract)
+		#image_comments = getComments(page_extract)
 
 		# Get image metadata
-		image_meta = getMetadata(page_extract)
+		#image_meta = getMetadata(page_extract)
 
 
 		if image_link is not None and image_ratings is not None:
@@ -209,6 +210,9 @@ def scraping():
 
 			# To download save images
 			#urllib.request.urlretrieve(image_link, FILEPATH)
+
+		# Delay request by 60s (see robots.txt)
+		time.delay(60)
 
 # Scraping starts here
 scraping()
