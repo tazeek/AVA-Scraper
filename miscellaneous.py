@@ -126,15 +126,31 @@ def extractImages():
 	full_challenge_page = extractPage(full_challenge_url)
 
 	# Extract the table of images from the page
-	image_table = full_challenge_page.findAll(
+	image_table = full_challenge_page.find(
 		lambda tag:
 		'width' in tag.attrs and
 		'align' in tag.attrs and
+		'cellspacing' in tag.attrs and
+		'cellpadding' in tag.attrs and
 		tag.attrs['align'] == 'center' and
 		tag.attrs['width'] == '90%'
 	)
 
+	# Extract the rows and remove the first entry
+	image_rows = image_table.findChildren('tr', {'class': 'forum-bg1'})
+
 	# Loop row by row
+	# Each row has two table data: one for image, the other for ratings
+	for i,row in enumerate(image_rows):
+		
+		row_td = row.findChildren('td')
+		
+		# Extract ratings data (Ignore the first entry)
+		ratings = [b.text for b in row_td[1].findAll('b') if 'N/A' not in b.text][1:]
+
+		print(ratings)
+
+		break
 
 	# Modify the URL to get the original image
 
