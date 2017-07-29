@@ -108,9 +108,15 @@ def scrapeChallengePage(url, stop_id):
 
 	return
 
-def extractImages(txt_file):
+def extractImages():
 
 	# Load the challenge IDs from the AVA 2.0
+	new_challenge_list = []
+
+	with open('AVA 2.0 challenges.txt') as file:
+		for line in file:
+			challenge_data = line.split()
+			new_challenge_list.append(challenge_data[0])
 
 	# Create URL variable to navigate challenge pages
 
@@ -133,5 +139,6 @@ def extractImages(txt_file):
 #scrapeChallengePage(url, ava_last_id)
 
 # Extract Images from each challenge 
+extractImages()
 
 # Save Images and their ratings
