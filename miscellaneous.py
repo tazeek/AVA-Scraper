@@ -120,7 +120,7 @@ def extractImages():
 
 	# Create URL variable to navigate challenge pages (Dummy test: 2497)
 	full_challenge_url = 'http://dpchallenge.com/challenge_results.php?CHALLENGE_ID={}&show_full=1'
-	full_challenge_url = full_challenge_url.format('2497')
+	full_challenge_url = full_challenge_url.format('2330')
 
 	# Extract page using BeautifulSoup
 	full_challenge_page = extractPage(full_challenge_url)
@@ -145,12 +145,12 @@ def extractImages():
 		
 		row_td = row.findChildren('td')
 		
-		# Extract ratings data (Ignore the first entry)
+		# Extract ratings data (Ignore the first entry as it corresponds to position)
 		ratings = [b.text for b in row_td[1].findAll('b') if 'N/A' not in b.text][1:]
 
-		print(ratings)
-
-		break
+		# If the photograph doesn't have 4 ratings, exclude it
+		if len(ratings) == 4:
+			print(i+1)
 
 	# Modify the URL to get the original image
 
