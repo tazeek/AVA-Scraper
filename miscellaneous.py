@@ -121,6 +121,7 @@ def extractImages():
 	# Create URL variable to navigate challenge pages (Dummy test: 2497)
 	full_challenge_url = 'http://dpchallenge.com/challenge_results.php?CHALLENGE_ID={}&show_full=1'
 	full_challenge_url = full_challenge_url.format('2497')
+	challenge_id = '2497'
 
 	# Extract page using BeautifulSoup
 	full_challenge_page = extractPage(full_challenge_url)
@@ -149,28 +150,37 @@ def extractImages():
 		ratings = [b.text for b in row_td[1].findAll('b') if 'N/A' not in b.text][1:]
 
 		# If the photograph doesn't have 4 ratings, exclude it
-		if len(ratings) == 4:
+		if len(ratings) == 4: 
 			
 			# Extract Image URL 
-			# URL example: http://images.dpchallenge.com/images_challenge/2000-2999/2497/1200/Copyrighted_Image_Reuse_Prohibited_1201821.jpg
 			image_td = row_td[0].find('img')['src']
 
 			# Modify the URL to get the original image
 			image_td = image_td.split("/")
 			image_td = ['1200' if val == '120' else val for val in image_td]
 
-			# Extract image ID and concat new URL
+			# Extract image ID
 			image_id = int(re.findall('\d+', image_td[-1])[0])
-			print(image_id)
+
+			# Concat the necessary data for given image
+			image_data = [str(i+1), str(image_id)] + ratings + [challenge_id]
+			image_data = (' '.join(image_data)) + '\n'
+
+			# Concat new url
 			image_td = 'http:/' + ("/".join(image_td[1:]))
 
-			# Download images
+			# Store in images in AVA 2.0 folder
 			FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
 			urllib.request.urlretrieve(image_td, FILEPATH)
 
-		break
+			# Append ratings to AVA 2.0 text file
+			with open("AVA 2.0.txt", "a") as append_file:
+				append_file.write(image_data)
 
-	# Store in images in AVA 2.0 folder
+			print(i)
+
+		if i == 10:
+			break
 
 	time.sleep(60)
 	exit()
