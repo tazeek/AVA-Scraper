@@ -151,13 +151,18 @@ def extractImages():
 		# If the photograph doesn't have 4 ratings, exclude it
 		if len(ratings) == 4:
 			
-			# Extract Image URL
+			# Extract Image URL 
+			# URL example: http://images.dpchallenge.com/images_challenge/2000-2999/2497/1200/Copyrighted_Image_Reuse_Prohibited_1201821.jpg
 			image_td = row_td[0].find('img')['src']
-			print(image_td)
+
+			# Modify the URL to get the original image
+			image_td = image_td.split("/")
+			image_td = ['1200' if val == '120' else val for val in image_td]
+			image_td = 'http:/' + ("/".join(image_td[1:]))
+
+			# Download images
 
 		break
-
-	# Modify the URL to get the original image
 
 	# Store in images in AVA 2.0 folder
 
