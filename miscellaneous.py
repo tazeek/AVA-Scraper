@@ -158,9 +158,15 @@ def extractImages():
 			# Modify the URL to get the original image
 			image_td = image_td.split("/")
 			image_td = ['1200' if val == '120' else val for val in image_td]
+
+			# Extract image ID and concat new URL
+			image_id = int(re.findall('\d+', image_td[-1])[0])
+			print(image_id)
 			image_td = 'http:/' + ("/".join(image_td[1:]))
 
 			# Download images
+			FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
+			urllib.request.urlretrieve(image_td, FILEPATH)
 
 		break
 
