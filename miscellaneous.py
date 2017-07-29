@@ -118,17 +118,31 @@ def extractImages():
 			challenge_data = line.split()
 			new_challenge_list.append(challenge_data[0])
 
-	# Create URL variable to navigate challenge pages
+	# Create URL variable to navigate challenge pages (Dummy test: 2497)
+	full_challenge_url = 'http://dpchallenge.com/challenge_results.php?CHALLENGE_ID={}&show_full=1'
+	full_challenge_url = full_challenge_url.format('2497')
 
 	# Extract page using BeautifulSoup
+	full_challenge_page = extractPage(full_challenge_url)
 
-	# Extract the Image URLs from the page
+	# Extract the table of images from the page
+	image_table = full_challenge_page.findAll(
+		lambda tag:
+		'width' in tag.attrs and
+		'align' in tag.attrs and
+		tag.attrs['align'] == 'center' and
+		tag.attrs['width'] == '90%'
+	)
 
-	# Check if image is valid or not
+	# Loop row by row
 
 	# Modify the URL to get the original image
 
 	# Store in images in AVA 2.0 folder
+
+	time.sleep(60)
+	exit()
+
 	return
 
 # Get the last ID
