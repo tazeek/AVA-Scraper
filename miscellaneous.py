@@ -112,6 +112,7 @@ def extractImages():
 
 	# Load the challenge IDs from the AVA 2.0
 	new_challenge_list = []
+	count = 0
 
 	with open('AVA 2.0 challenges.txt') as file:
 		for line in file:
@@ -120,70 +121,69 @@ def extractImages():
 
 	# Create URL variable to navigate challenge pages (Dummy test: 2497)
 	full_challenge_url = 'http://dpchallenge.com/challenge_results.php?CHALLENGE_ID={}&show_full=1'
-	full_challenge_url = full_challenge_url.format('2497')
-	challenge_id = '2497'
 
-	# Extract page using BeautifulSoup
-	full_challenge_page = extractPage(full_challenge_url)
+	for challenge_id in new_challenge_list:
 
-	# Extract the table of images from the page
-	image_table = full_challenge_page.find(
-		lambda tag:
-		'width' in tag.attrs and
-		'align' in tag.attrs and
-		'cellspacing' in tag.attrs and
-		'cellpadding' in tag.attrs and
-		tag.attrs['align'] == 'center' and
-		tag.attrs['width'] == '90%'
-	)
+		url = full_challenge_url.format(challenge_id)
 
-	# Extract the rows and remove the first entry
-	image_rows = image_table.findChildren('tr', {'class': 'forum-bg1'})
+		# Extract page using BeautifulSoup
+		full_challenge_page = extractPage(url)
 
-	# Loop row by row
-	# Each row has two table data: one for image, the other for ratings
-	for i,row in enumerate(image_rows):
+		# Extract the table of images from the page
+		image_table = full_challenge_page.find(
+			lambda tag:
+			'width' in tag.attrs and
+			'align' in tag.attrs and
+			'cellspacing' in tag.attrs and
+			'cellpadding' in tag.attrs and
+			tag.attrs['align'] == 'center' and
+			tag.attrs['width'] == '90%'
+		)
+
+		# Extract the rows and remove the first entry
+		image_rows = image_table.findChildren('tr', {'class': 'forum-bg1'})
+
+		# Loop row by row
+		# Each row has two table data: one for image, the other for ratings
+		for row in image_rows:
 		
-		row_td = row.findChildren('td')
+			row_td = row.findChildren('td')
 		
-		# Extract ratings data (Ignore the first entry as it corresponds to position)
-		ratings = [b.text for b in row_td[1].findAll('b') if 'N/A' not in b.text][1:]
+			# Extract ratings data (Ignore the first entry as it corresponds to position)
+			ratings = [b.text for b in row_td[1].findAll('b') if 'N/A' not in b.text][1:]
 
-		# If the photograph doesn't have 4 ratings, exclude it
-		if len(ratings) == 4: 
+			# If the photograph doesn't have 4 ratings, exclude it
+			if len(ratings) == 4: 
 			
-			# Extract Image URL 
-			image_td = row_td[0].find('img')['src']
+				# Extract Image URL 
+				image_td = row_td[0].find('img')['src']
 
-			# Modify the URL to get the original image
-			image_td = image_td.split("/")
-			image_td = ['1200' if val == '120' else val for val in image_td]
+				# Modify the URL to get the original image
+				image_td = image_td.split("/")
+				image_td = ['1200' if val == '120' else val for val in image_td]
 
-			# Extract image ID
-			image_id = int(re.findall('\d+', image_td[-1])[0])
+				# Extract image ID
+				image_id = int(re.findall('\d+', image_td[-1])[0])
 
-			# Concat the necessary data for given image
-			image_data = [str(i+1), str(image_id)] + ratings + [challenge_id]
-			image_data = (' '.join(image_data)) + '\n'
+				# Concat the necessary data for given image
+				image_data = [str(count+1), str(image_id)] + ratings + [challenge_id]
+				image_data = (' '.join(image_data)) + '\n'
+				count += 1
 
-			# Concat new url
-			image_td = 'http:/' + ("/".join(image_td[1:]))
+				# Concat new url
+				image_td = 'http:/' + ("/".join(image_td[1:]))
 
-			# Store in images in AVA 2.0 folder
-			FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
-			urllib.request.urlretrieve(image_td, FILEPATH)
+				# Store in images in AVA 2.0 folder
+				FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
+				urllib.request.urlretrieve(image_td, FILEPATH)
 
-			# Append ratings to AVA 2.0 text file
-			with open("AVA 2.0.txt", "a") as append_file:
-				append_file.write(image_data)
+				# Append ratings to AVA 2.0 text file
+				with open("AVA 2.0.txt", "a") as append_file:
+					append_file.write(image_data)
 
-			print(i)
-
-		if i == 10:
-			break
+		break
 
 	time.sleep(60)
-	exit()
 
 	return
 
@@ -194,7 +194,5 @@ def extractImages():
 #url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
 #scrapeChallengePage(url, ava_last_id)
 
-# Extract Images from each challenge 
-extractImages()
-
-# Save Images and their ratings
+# Scrape Images from each challenge (DEPLOY IT IN PC)
+#extractImages()
