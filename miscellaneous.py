@@ -53,7 +53,6 @@ def scrapeChallengePage(url, stop_id):
 	# Number of pictures 
 	pictures_new = 0
 
-	'''
 	# Find all rows (Each row is one challenge)
 	challenge_rows = challenge_page.findAll(
 		lambda tag:
@@ -82,11 +81,8 @@ def scrapeChallengePage(url, stop_id):
 	# Save in a text file
 	with open("AVA 2.0 challenges.txt", "w", encoding='utf-8') as outfile:
 		for key, value in new_challenge_dict.items():
-			print(key, " ", value)
 			outfile.write(str(key) + " " + value + "\n")
-	'''
 
-	'''
 	# Add in the entries (Rough idea of new photographs)
 	# This area can be used for metadata purposes
 	challenge_rows = challenge_page.findAll(
@@ -104,21 +100,37 @@ def scrapeChallengePage(url, stop_id):
 		
 		row_td = row.findChildren('td', {'align': 'center'})
 
+		print(pictures_new, row_td[0].text)
 		pictures_new += int(row_td[0].text)
 
-	'''
-
+	print(pictures_new)
 	time.sleep(60)
-	exit()
 
 	return
 
+def extractImages(txt_file):
+
+	# Load the challenge IDs from the AVA 2.0
+
+	# Create URL variable to navigate challenge pages
+
+	# Extract page using BeautifulSoup
+
+	# Extract the Image URLs from the page
+
+	# Check if image is valid or not
+
+	# Modify the URL to get the original image
+
+	# Store in images in AVA 2.0 folder
+	return
+
 # Get the last ID
-ava_last_id = getLastChallenge()
+#ava_last_id = getLastChallenge()
 
 # Scrape Challenge Page
-url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
-scrapeChallengePage(url, ava_last_id)
+#url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
+#scrapeChallengePage(url, ava_last_id)
 
 # Extract Images from each challenge 
 
