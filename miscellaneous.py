@@ -44,6 +44,23 @@ def getLastChallenge():
 
 	return last_challenge_id
 
+# Scrape the gallery page for semantic tags
+def scrapeGalleryPage(url):
+
+	# Scrape using BeautifulSoup
+
+	# Dictionary to store tags
+
+	# Find all the given galleries
+
+	# Extract ID
+
+	# Extract text
+
+	# Store in key-value format ('ID': 'Name')
+
+	# Save in a text file
+
 # Scrape the challenge page (ALL results)
 def scrapeChallengePage(url, stop_id):
 
