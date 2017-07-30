@@ -18,6 +18,8 @@ def extractPage(url):
 	requests_page = requests.get(url, headers=headers)
 
 	# Sleep for a minute
+	print("SLEEPING NOW (60 seconds)")
+	print(time.strftime(),"\n")
 	time.sleep(60)
 
 	# HTML Extraction using BeautifulSoup
@@ -162,7 +164,7 @@ def scrapeChallengePage(url, stop_id):
 	print(pictures_new)
 	print(comments_new)
 	'''
-	
+
 	return
 
 def extractImages():
@@ -179,12 +181,18 @@ def extractImages():
 	# Create URL variable to navigate challenge pages (Dummy test: 2497)
 	full_challenge_url = 'http://dpchallenge.com/challenge_results.php?CHALLENGE_ID={}&show_full=1'
 
-	for challenge_id in new_challenge_list:
+	for i,challenge_id in enumerate(new_challenge_list):
 
 		url = full_challenge_url.format(challenge_id)
 
 		# Extract page using BeautifulSoup
 		full_challenge_page = extractPage(url)
+
+		# Progress output
+		print("EXTRACTION PROGRESS: %d/%d" % (i+1, len(new_challenge_list)))
+		print("Current ID extracting: ", challenge_id)
+		print (time.strftime("%H:%M:%S"))
+		print("\n\n")
 
 		# Extract the table of images from the page
 		image_table = full_challenge_page.find(
@@ -230,7 +238,7 @@ def extractImages():
 				image_data = (' '.join(image_data)) + '\n'
 
 				# Concat the necessary data for the image's votes
-				image_vote_data = ' '.join([str(count+1), str(image_id), vote])
+				image_vote_data = ' '.join([str(count+1), str(image_id), vote]) + '\n'
 				count += 1
 
 				# Concat new url
@@ -248,10 +256,6 @@ def extractImages():
 				with open('AVA 2.0 Votes.txt', 'a') as append_file:
 					append_file.write(image_vote_data)
 
-				exit()
-
-		break
-
 	return
 
 # Get the last ID
@@ -262,8 +266,8 @@ def extractImages():
 #scrapeChallengePage(url, ava_last_id)
 
 # Scrape Gallery Page
-url = 'http://dpchallenge.com/photo_gallery.php'
-scrapeGalleryPage(url)
+#url = 'http://dpchallenge.com/photo_gallery.php'
+#scrapeGalleryPage(url)
 
 # Scrape Images from each challenge (DEPLOY IT IN PC)
-#extractImages()
+extractImages()
