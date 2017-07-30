@@ -129,6 +129,9 @@ def extractImages():
 		# Extract page using BeautifulSoup
 		full_challenge_page = extractPage(url)
 
+		# Sleep for a minute
+		time.sleep(60)
+
 		# Extract the table of images from the page
 		image_table = full_challenge_page.find(
 			lambda tag:
@@ -154,7 +157,10 @@ def extractImages():
 
 			# If the photograph doesn't have 4 ratings, exclude it
 			if len(ratings) == 4: 
-			
+
+				# Extract number of votes
+				vote = [b.text for b in row_td[1].findAll('span')][-1]
+
 				# Extract Image URL 
 				image_td = row_td[0].find('img')['src']
 
@@ -165,10 +171,14 @@ def extractImages():
 				# Extract image ID
 				image_id = int(re.findall('\d+', image_td[-1])[0])
 
-				# Concat the necessary data for given image
+				# Concat the necessary data for given image's ratings
 				image_data = [str(count+1), str(image_id)] + ratings + [challenge_id]
 				image_data = (' '.join(image_data)) + '\n'
+
+				# Concat the necessary data for the image's votes
+				image_vote_data = ' '.join([str(count+1), str(image_id), vote])
 				count += 1
+				exit()
 
 				# Concat new url
 				image_td = 'http:/' + ("/".join(image_td[1:]))
@@ -177,13 +187,15 @@ def extractImages():
 				FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
 				urllib.request.urlretrieve(image_td, FILEPATH)
 
-				# Append ratings to AVA 2.0 text file
+				# Append ratings to 'AVA 2.0' text file
 				with open("AVA 2.0.txt", "a") as append_file:
 					append_file.write(image_data)
 
-		break
+				# Append votes to 'AVA 2.0 Votes' text file
+				with open('AVA 2.0 Votes.txt') as append_file:
+					append_file.write(image_vote_data)
 
-	time.sleep(60)
+		break
 
 	return
 
@@ -195,4 +207,4 @@ def extractImages():
 #scrapeChallengePage(url, ava_last_id)
 
 # Scrape Images from each challenge (DEPLOY IT IN PC)
-#extractImages()
+extractImages()
