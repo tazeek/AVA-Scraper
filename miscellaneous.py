@@ -19,7 +19,7 @@ def extractPage(url):
 
 	# Sleep for a minute
 	print("SLEEPING NOW (60 seconds)")
-	print(time.strftime(),"\n")
+	print(time.strftime("%H:%M:%S"),"\n")
 	time.sleep(60)
 
 	# HTML Extraction using BeautifulSoup
