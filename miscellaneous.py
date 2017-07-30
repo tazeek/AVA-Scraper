@@ -17,6 +17,9 @@ def extractPage(url):
 	# Load using requests
 	requests_page = requests.get(url, headers=headers)
 
+	# Sleep for a minute
+	time.sleep(60)
+
 	# HTML Extraction using BeautifulSoup
 	page_extract = BeautifulSoup(requests_page.text, 'lxml')
 
@@ -50,9 +53,11 @@ def scrapeChallengePage(url, stop_id):
 	# JSON File
 	new_challenge_dict = {}
 
-	# Number of pictures 
+	# Number of pictures and comments
 	pictures_new = 0
+	comments_new = 0
 
+	'''
 	# Find all rows (Each row is one challenge)
 	challenge_rows = challenge_page.findAll(
 		lambda tag:
@@ -82,6 +87,7 @@ def scrapeChallengePage(url, stop_id):
 	with open("AVA 2.0 challenges.txt", "w", encoding='utf-8') as outfile:
 		for key, value in new_challenge_dict.items():
 			outfile.write(str(key) + " " + value + "\n")
+	'''
 
 	# Add in the entries (Rough idea of new photographs)
 	# This area can be used for metadata purposes
@@ -95,16 +101,19 @@ def scrapeChallengePage(url, stop_id):
 
 	for i,row in enumerate(challenge_rows):
 
+		# Number of new challenges are 1080
 		if i == 1080:
 			break
 		
+		# Find metadata		
 		row_td = row.findChildren('td', {'align': 'center'})
 
-		print(pictures_new, row_td[0].text)
+		# Add in number of new pictures and comments
 		pictures_new += int(row_td[0].text)
+		comments_new += int(row_td[7].text.replace(',',''))
 
 	print(pictures_new)
-	time.sleep(60)
+	print(comments_new)
 
 	return
 
@@ -128,9 +137,6 @@ def extractImages():
 
 		# Extract page using BeautifulSoup
 		full_challenge_page = extractPage(url)
-
-		# Sleep for a minute
-		time.sleep(60)
 
 		# Extract the table of images from the page
 		image_table = full_challenge_page.find(
@@ -178,7 +184,6 @@ def extractImages():
 				# Concat the necessary data for the image's votes
 				image_vote_data = ' '.join([str(count+1), str(image_id), vote])
 				count += 1
-				exit()
 
 				# Concat new url
 				image_td = 'http:/' + ("/".join(image_td[1:]))
@@ -192,19 +197,21 @@ def extractImages():
 					append_file.write(image_data)
 
 				# Append votes to 'AVA 2.0 Votes' text file
-				with open('AVA 2.0 Votes.txt') as append_file:
+				with open('AVA 2.0 Votes.txt', 'a') as append_file:
 					append_file.write(image_vote_data)
+
+				exit()
 
 		break
 
 	return
 
 # Get the last ID
-#ava_last_id = getLastChallenge()
+ava_last_id = getLastChallenge()
 
 # Scrape Challenge Page
-#url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
-#scrapeChallengePage(url, ava_last_id)
+url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
+scrapeChallengePage(url, ava_last_id)
 
 # Scrape Images from each challenge (DEPLOY IT IN PC)
-extractImages()
+#extractImages()
