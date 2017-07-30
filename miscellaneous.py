@@ -48,18 +48,48 @@ def getLastChallenge():
 def scrapeGalleryPage(url):
 
 	# Scrape using BeautifulSoup
+	gallery_page = extractPage(url)
 
 	# Dictionary to store tags
+	new_semantic_dict = {}
 
-	# Find all the given galleries
+	# Find all the rows of galleries
+	gallery_rows = gallery_page.findAll(
+		lambda tag:
+		'width' in tag.attrs and
+		'cellspacing' in tag.attrs and
+		'cellpadding' in tag.attrs and
+		tag.attrs['width'] == '100%' and
+		tag.attrs['cellspacing'] == '0' and
+		tag.attrs['cellpadding'] == '3'
+	)[0].findChildren('td')
 
-	# Extract ID
+	# Loop over row by row
+	for row in gallery_rows:
+		
+		# Extract all links for a row
+		gallery_links = row.findAll(
+			lambda tag:
+			'href' in tag.attrs and
+			tag.attrs['href'].startswith('/photo_gallery.php?')
+		)
 
-	# Extract text
+		# Loop over link by link
+		for gallery in gallery_links:
 
-	# Store in key-value format ('ID': 'Name')
+			# Extract ID
+			tag_id = int(re.findall('\d+', gallery['href'])[0])
+
+			# Extract text
+			tag_name = gallery.text.replace(' ','_')
+
+			# Store in key-value format ('ID': 'Name')
+			new_semantic_dict[tag_id] = tag_name
 
 	# Save in a text file
+	with open('AVA 2.0 Semantics.txt', 'w', encoding='utf-8') as outfile:
+		for key, value in new_semantic_dict.items():
+			outfile.write(str(key) + ' ' + value + "\n")
 
 # Scrape the challenge page (ALL results)
 def scrapeChallengePage(url, stop_id):
@@ -105,7 +135,7 @@ def scrapeChallengePage(url, stop_id):
 		for key, value in new_challenge_dict.items():
 			outfile.write(str(key) + " " + value + "\n")
 	'''
-
+	'''
 	# Add in the entries (Rough idea of new photographs)
 	# This area can be used for metadata purposes
 	challenge_rows = challenge_page.findAll(
@@ -131,7 +161,8 @@ def scrapeChallengePage(url, stop_id):
 
 	print(pictures_new)
 	print(comments_new)
-
+	'''
+	
 	return
 
 def extractImages():
@@ -224,11 +255,15 @@ def extractImages():
 	return
 
 # Get the last ID
-ava_last_id = getLastChallenge()
+#ava_last_id = getLastChallenge()
 
 # Scrape Challenge Page
-url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
-scrapeChallengePage(url, ava_last_id)
+#url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
+#scrapeChallengePage(url, ava_last_id)
+
+# Scrape Gallery Page
+url = 'http://dpchallenge.com/photo_gallery.php'
+scrapeGalleryPage(url)
 
 # Scrape Images from each challenge (DEPLOY IT IN PC)
 #extractImages()
