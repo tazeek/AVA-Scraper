@@ -167,6 +167,25 @@ def scrapeChallengePage(url, stop_id):
 
 	return
 
+# Create URL for Image downlad:
+def createImageURL(challenge_id, image_id):
+
+	# Create the URL archive link
+	image_url = 'http://images.dpchallenge.com/images_challenge/'
+
+	# Get the challenge range with challenge id
+	if challenge_id >= 2000:
+		challenge_range = '2000-2999/' 
+	else:
+		challenge_range = '1000-1999/'
+
+	image_url += challenge_range + str(challenge_id) + '/1200/'
+
+	# Add in the image id
+	image_url += 'Copyrighted_Image_Reuse_Prohibited_' + image_id + '.jpg'
+
+	return image_url
+
 def extractImages():
 
 	# Load the challenge IDs from the AVA 2.0
@@ -223,15 +242,12 @@ def extractImages():
 				# Extract number of votes
 				vote = [b.text for b in row_td[1].findAll('span')][-1]
 
-				# Extract Image URL 
-				image_td = row_td[0].find('img')['src']
+				# Extract Image ID
+				image_id = row_td[0].find('a')['href']
+				image_id = int(re.findall('\d+', image_id)[0])
 
-				# Modify the URL to get the original image
-				image_td = image_td.split("/")
-				image_td = ['1200' if val == '120' else val for val in image_td]
-
-				# Extract image ID
-				image_id = int(re.findall('\d+', image_td[-1])[0])
+				# Create Image URL 
+				image_url = createImageURL(int(challenge_id), str(image_id))
 
 				# Concat the necessary data for given image's ratings
 				image_data = [str(count+1), str(image_id)] + ratings + [challenge_id]
@@ -241,12 +257,9 @@ def extractImages():
 				image_vote_data = ' '.join([str(count+1), str(image_id), vote]) + '\n'
 				count += 1
 
-				# Concat new url
-				image_td = 'http:/' + ("/".join(image_td[1:]))
-
 				# Store in images in AVA 2.0 folder
 				FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
-				urllib.request.urlretrieve(image_td, FILEPATH)
+				urllib.request.urlretrieve(image_url, FILEPATH)
 
 				# Append ratings to 'AVA 2.0' text file
 				with open("AVA 2.0.txt", "a") as append_file:
@@ -255,6 +268,11 @@ def extractImages():
 				# Append votes to 'AVA 2.0 Votes' text file
 				with open('AVA 2.0 Votes.txt', 'a') as append_file:
 					append_file.write(image_vote_data)
+
+				print("IMAGES EXTRACTED: %s/%s" % (str(count+1), '82702'))
+
+
+		print("\n")
 
 	return
 
