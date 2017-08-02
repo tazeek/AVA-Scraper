@@ -1,12 +1,17 @@
-# REFERENCE: https://github.com/sergeyk/vislab/blob/master/vislab/datasets/ava.py
-
 from bs4 import BeautifulSoup
+
 import urllib.request
 import requests
 import re
 import time
 
 def extractPage(url):
+
+	# Define header
+	headers = {
+    	'User-Agent': 'Tazeek',
+    	'From': 'tazeek.rakib@gmail.com'  # This is another valid field
+	}
 
 	# Load using requests
 	requests_gallery = requests.get(url)
@@ -58,26 +63,13 @@ def getComments(soup_comments):
 
 	return image_comments
 
-def getMetadata(url):
+def getMetadata(soup_meta):
 
 	# Meta data is to be stored in a json format
-	challenge_json = {}
 	semantic_json = {}
 
 	# Extract using BeautifulSoup
 	soup_meta = extractPage(url)
-
-	# Extract Challenge ID
-	challenge = soup_meta.find(
-		lambda tag:
-		'href' in tag.attrs and
-		tag.attrs['href'].startswith('/challenge_results.php')
-	)
-
-	# Store the challenge ID in the format 'ID: Challenge Name'
-	challenge_name = challenge.text
-	challenge_id = int(re.findall('\d+', challenge['href'])[0])
-	challenge_json[challenge_id] = challenge_name
 
 	# Extract Semantic Tags
 	semantic_tags = soup_meta.findAll(
@@ -93,20 +85,12 @@ def getMetadata(url):
 
 		semantic_json[semantic_id] = semantic_name
 
-	return challenge_json, semantic_json
+	return semantic_json
 
 def scraping():
 
 	# AVA Image URL
 	AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
-
-	# Variable for counting purposes
-	count = 0
-
-	#image_link = getImageURL(dummy)
-	#image_comments = getComments(dummy)
-	#image_ratings = getRatings(dummy)
-	#image_meta = getMetadata(dummy)
 
 	for image_id in range(AVA_LAST_ID+1, latest_image_id+1):
 
