@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from os import listdir
 
 import urllib.request
 import requests
@@ -87,10 +88,20 @@ def getMetadata(soup_meta):
 
 	return semantic_json
 
+def getImageID():
+
+	# Image ids are to be stored in an array
+	image_id_list = []
+
+	# Load the AVA 2.0 folder and get all the images
+
+
 def scraping():
 
 	# AVA Image URL
 	AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
+
+	exit()
 
 	for image_id in range(AVA_LAST_ID+1, latest_image_id+1):
 
