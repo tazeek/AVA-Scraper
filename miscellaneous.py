@@ -167,6 +167,15 @@ def scrapeChallengePage(url, stop_id):
 
 	return
 
+# Cases where scraper crashes unexpectedly
+def emergencyCase():
+
+	# Get the last image id scraped
+
+	# Get the last challenge id scraped/scraping
+
+	return
+
 # Create URL for Image downlad:
 def createImageURL(challenge_id, image_id):
 
