@@ -233,16 +233,6 @@ def extractImages(EMERGENCY):
 		# Slice the array
 		new_challenge_list = new_challenge_list[last_challenge_index:]
 
-	print("LAST INDEX: ", count)
-	print("LAST IMAGE ID: ", last_image_id)
-	print("LAST CHALLENGE_ID: ", challenge_id)
-	print("INDEX ID: ", new_challenge_list.index(challenge_id))
-
-	print("\n", new_challenge_list)
-	print("\n", len(new_challenge_list))
-	
-	exit()
-
 	# Create URL variable to navigate challenge pages (Dummy test: 2497)
 	full_challenge_url = 'http://dpchallenge.com/challenge_results.php?CHALLENGE_ID={}&show_full=1'
 
@@ -292,6 +282,17 @@ def extractImages(EMERGENCY):
 				image_id = row_td[0].find('a')['href']
 				image_id = int(re.findall('\d+', image_id)[0])
 
+				# In case of emergency, execute this
+				if EMERGENCY:
+
+					# Check if the current id matches the last id
+					# If it does, emergency case stops
+					if image_id == int(last_image_id):
+						EMERGENCY = False
+						continue
+					else:
+						continue
+
 				# Create Image URL 
 				image_url = createImageURL(int(challenge_id), str(image_id))
 
@@ -303,17 +304,9 @@ def extractImages(EMERGENCY):
 				image_vote_data = ' '.join([str(count+1), str(image_id), vote]) + '\n'
 				count += 1
 
-				# In case of emergency, execute this
-				if EMERGENCY:
+				print(count)
+				print(image_id)
 
-					# Check if the current id matches the last id
-					# If it does, emergency case stops
-					if image_id == last_image_id:
-						EMERGENCY = False
-						continue
-					else:
-						continue
-						
 				exit()
 
 				# Store in images in AVA 2.0 folder
