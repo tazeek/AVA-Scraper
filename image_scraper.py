@@ -181,10 +181,10 @@ def emergencyCase():
 		last_line = list(file)[-1].split()
 
 	# Get the last index number
-	last_index = last_line[0]
+	last_index = int(last_line[0])
 
 	# Get the last image id scraped
-	last_image_id = last_line[1]
+	last_image_id = int(last_line[1])
 
 	# Get the last challenge id scraped/scraping
 	last_challenge_id = last_line[-1]
@@ -287,7 +287,7 @@ def extractImages(EMERGENCY):
 
 					# Check if the current id matches the last id
 					# If it does, emergency case stops
-					if image_id == int(last_image_id):
+					if image_id == last_image_id:
 						EMERGENCY = False
 						continue
 					else:
@@ -303,11 +303,6 @@ def extractImages(EMERGENCY):
 				# Concat the necessary data for the image's votes
 				image_vote_data = ' '.join([str(count+1), str(image_id), vote]) + '\n'
 				count += 1
-
-				print(count)
-				print(image_id)
-
-				exit()
 
 				# Store in images in AVA 2.0 folder
 				FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
