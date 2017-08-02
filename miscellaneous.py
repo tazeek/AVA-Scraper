@@ -225,7 +225,7 @@ def extractImages(EMERGENCY):
 	if EMERGENCY:
 		
 		# Get challenge id, image id, and index number
-		count, image_id, challenge_id = emergencyCase()
+		count, last_image_id, challenge_id = emergencyCase()
 
 		# Get index of challenge scraped (Perform manual inspection)
 		last_challenge_index = new_challenge_list.index(challenge_id)
@@ -234,11 +234,12 @@ def extractImages(EMERGENCY):
 		new_challenge_list = new_challenge_list[last_challenge_index:]
 
 	print("LAST INDEX: ", count)
-	print("LAST IMAGE ID: ", image_id)
+	print("LAST IMAGE ID: ", last_image_id)
 	print("LAST CHALLENGE_ID: ", challenge_id)
 	print("INDEX ID: ", new_challenge_list.index(challenge_id))
 
 	print("\n", new_challenge_list)
+	print("\n", len(new_challenge_list))
 	
 	exit()
 
@@ -269,7 +270,7 @@ def extractImages(EMERGENCY):
 			tag.attrs['width'] == '90%'
 		)
 
-		# Extract the rows and remove the first entry
+		# Extract the rows
 		image_rows = image_table.findChildren('tr', {'class': 'forum-bg1'})
 
 		# Loop row by row
@@ -301,6 +302,19 @@ def extractImages(EMERGENCY):
 				# Concat the necessary data for the image's votes
 				image_vote_data = ' '.join([str(count+1), str(image_id), vote]) + '\n'
 				count += 1
+
+				# In case of emergency, execute this
+				if EMERGENCY:
+
+					# Check if the current id matches the last id
+					# If it does, emergency case stops
+					if image_id == last_image_id:
+						EMERGENCY = False
+						continue
+					else:
+						continue
+						
+				exit()
 
 				# Store in images in AVA 2.0 folder
 				FILEPATH = 'AVA 2.0 Images/' + str(image_id) + '.jpg'
