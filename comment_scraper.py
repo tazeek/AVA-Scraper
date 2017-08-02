@@ -90,16 +90,35 @@ def getMetadata(soup_meta):
 
 def getImageID():
 
-	# Image ids are to be stored in an array
+	# Image ID List
 	image_id_list = []
 
+	# Specify Image path
+	PATH = 'AVA 2.0 Images/'
+
 	# Load the AVA 2.0 folder and get all the images
+	image_list = [images for images in listdir(PATH)]
+	
+	# Remove .jpg ending
+	for images in image_list:
+
+		# After cleaning, store in list
+		id = re.sub('.jpg','', images)
+		image_id_list.append(id)
+
+	print(image_id_list)
+	exit()
+
+	return image_id_list
 
 
 def scraping():
 
 	# AVA Image URL
 	AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
+	
+	# Get image id list
+	image_id_list = getImageID()
 
 	exit()
 
