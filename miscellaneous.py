@@ -5,6 +5,9 @@ import requests
 import re
 import time
 
+# If the scraper crashes, set this variable to True
+EMERGENCY = True
+
 # Page extract
 def extractPage(url):
 
@@ -170,11 +173,23 @@ def scrapeChallengePage(url, stop_id):
 # Cases where scraper crashes unexpectedly
 def emergencyCase():
 
+	# Find last line
+	last_line = ''
+
+	# Read the last line of 'AVA 2.0' text file
+	with open('AVA 2.0.txt') as file:
+		last_line = list(file)[-1].split()
+
+	# Get the last index number
+	last_index = last_line[0]
+
 	# Get the last image id scraped
+	last_image_id = last_line[1]
 
 	# Get the last challenge id scraped/scraping
+	last_challenge_id = last_line[-1]
 
-	return
+	return last_index, last_image_id, last_challenge_id
 
 # Create URL for Image downlad:
 def createImageURL(challenge_id, image_id):
@@ -195,7 +210,7 @@ def createImageURL(challenge_id, image_id):
 
 	return image_url
 
-def extractImages():
+def extractImages(EMERGENCY):
 
 	# Load the challenge IDs from the AVA 2.0
 	new_challenge_list = []
@@ -205,6 +220,27 @@ def extractImages():
 		for line in file:
 			challenge_data = line.split()
 			new_challenge_list.append(challenge_data[0])
+
+	# In case of emergency, load everything from scratch
+	if EMERGENCY:
+		
+		# Get challenge id, image id, and index number
+		count, image_id, challenge_id = emergencyCase()
+
+		# Get index of challenge scraped (Perform manual inspection)
+		last_challenge_index = new_challenge_list.index(challenge_id)
+
+		# Slice the array
+		new_challenge_list = new_challenge_list[last_challenge_index:]
+
+	print("LAST INDEX: ", count)
+	print("LAST IMAGE ID: ", image_id)
+	print("LAST CHALLENGE_ID: ", challenge_id)
+	print("INDEX ID: ", new_challenge_list.index(challenge_id))
+
+	print("\n", new_challenge_list)
+	
+	exit()
 
 	# Create URL variable to navigate challenge pages (Dummy test: 2497)
 	full_challenge_url = 'http://dpchallenge.com/challenge_results.php?CHALLENGE_ID={}&show_full=1'
@@ -297,4 +333,4 @@ def extractImages():
 #scrapeGalleryPage(url)
 
 # Scrape Images from each challenge (DEPLOY IT IN PC)
-extractImages()
+extractImages(EMERGENCY)
