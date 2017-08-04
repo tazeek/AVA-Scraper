@@ -170,11 +170,36 @@ def scrapeChallengePage(url, stop_id):
 # Rules extract 
 def extractRules(url):
 
+	# Store in dictionary
+	rules_dict = {}
+
 	# Extract page
 	page_extract = extractPage(url)
 
 	# Find the rules ID from html
+	rules = page_extract.findAll(
+		lambda tag:
+		'href' in tag.attrs and
+		tag.attrs['href'].startswith('challenge_rules.php?')
+	)
 
+	for rule in rules:
+
+		# Extract ID
+		rule_id = int(re.findall('\d+', rule['href'])[0])
+
+		# Check if in dictionary
+		# If not, extract name and store as 'ID: Name'
+		if rule_id not in rules_dict:
+
+			rule_name = rule.text
+
+			rules_dict[rule_id] = rule_name.replace('','_')
+
+	# Write to text file
+	with open("AVA Rules.txt", "w", encoding='utf-8') as outfile:
+		for key, value in rules_dict.items():
+			outfile.write(str(key) + " " + value + "\n")
 
 # Get the last ID
 #ava_last_id = getLastChallenge()
@@ -189,4 +214,4 @@ def extractRules(url):
 
 # Scrape Challenge Page
 url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
-scrapeChallengePage(url)
+extractRules(url)
