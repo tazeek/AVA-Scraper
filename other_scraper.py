@@ -5,6 +5,9 @@ import requests
 import re
 import time
 
+# Variables
+url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
+
 # Page extract
 def extractPage(url):
 
@@ -102,10 +105,6 @@ def scrapeChallengePage(url, stop_id):
 	# JSON File
 	new_challenge_dict = {}
 
-	# Number of pictures and comments
-	pictures_new = 0
-	comments_new = 0
-
 	'''
 	# Find all rows (Each row is one challenge)
 	challenge_rows = challenge_page.findAll(
@@ -137,7 +136,7 @@ def scrapeChallengePage(url, stop_id):
 		for key, value in new_challenge_dict.items():
 			outfile.write(str(key) + " " + value + "\n")
 	'''
-	'''
+	
 	# Add in the entries (Rough idea of new photographs)
 	# This area can be used for metadata purposes
 	challenge_rows = challenge_page.findAll(
@@ -148,22 +147,35 @@ def scrapeChallengePage(url, stop_id):
 
 	challenge_rows.pop(0)
 
-	for i,row in enumerate(challenge_rows):
+	for row in challenge_rows:
 
-		# Number of new challenges are 1080
-		if i == 1080:
-			break
+		# Challenge data to be stored in an array
+		challenge_data = []
+
+		# Find challenge tag and rule tag
+		challenge_rule_td = row.findChildren('a')
+		challenge_id = re.findall('\d+', challenge_rule_td[0]['href'])[0]
+		rule_id = re.findall('\d+', challenge_rule_td[1]['href'])[0]
+
+		# Append to array
+		challenge_data += [challenge_id, rule_id]
 		
 		# Find metadata		
 		row_td = row.findChildren('td', {'align': 'center'})
 
-		# Add in number of new pictures and comments
-		pictures_new += int(row_td[0].text)
-		comments_new += int(row_td[7].text.replace(',',''))
+		# Add in number of new pictures, votes, comments
+		challenge_data += [row_td[0].text.replace(',',''), 
+			row_td[5].text.replace(',', ''), 
+			row_td[7].text.replace(',','')
+		]
 
-	print(pictures_new)
-	print(comments_new)
-	'''
+		# Create string
+		challenge_data = ' '.join(challenge_data)
+		print(challenge_data)
+
+		# Append to text file
+		with('AVA (All)/Challenge Info.txt', "a") as outfile:
+			outfile.write(challenge_data + '\n')
 
 	return
 
@@ -197,7 +209,7 @@ def extractRules(url):
 			rules_dict[rule_id] = rule_name.replace('','_')
 
 	# Write to text file
-	with open("AVA Rules.txt", "w", encoding='utf-8') as outfile:
+	with open("AVA (All)/AVA Rules.txt", "w", encoding='utf-8') as outfile:
 		for key, value in rules_dict.items():
 			outfile.write(str(key) + " " + value + "\n")
 
@@ -205,13 +217,11 @@ def extractRules(url):
 #ava_last_id = getLastChallenge()
 
 # Scrape Challenge Page
-#url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
-#scrapeChallengePage(url, ava_last_id)
+scrapeChallengePage(url, 1080)
 
 # Scrape Gallery Page
 #url = 'http://dpchallenge.com/photo_gallery.php'
 #scrapeGalleryPage(url)
 
 # Scrape Challenge Page
-url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
-extractRules(url)
+#extractRules(url)
