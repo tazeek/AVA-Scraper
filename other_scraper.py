@@ -6,7 +6,8 @@ import re
 import time
 
 # Variables
-url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
+challenge_url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
+gallery_url = 'http://dpchallenge.com/photo_gallery.php'
 
 # Page extract
 def extractPage(url):
@@ -37,7 +38,7 @@ def getLastChallenge():
 	last_challenge_id = None
 
 	# Read the text file
-	with open('challenges.txt') as file:
+	with open('AVA 1.0/challenges.txt') as file:
 
 		# 1 line = Challenge ID followed by Challenge Name
 		for line in file:
@@ -92,7 +93,7 @@ def scrapeGalleryPage(url):
 			new_semantic_dict[tag_id] = tag_name
 
 	# Save in a text file
-	with open('AVA 2.0 Semantics.txt', 'w', encoding='utf-8') as outfile:
+	with open('AVA 2.0/AVA 2.0 Semantics.txt', 'w', encoding='utf-8') as outfile:
 		for key, value in new_semantic_dict.items():
 			outfile.write(str(key) + ' ' + value + "\n")
 
@@ -132,7 +133,7 @@ def scrapeChallengePage(url, stop_id):
 		new_challenge_dict[row_id] = row_name
 
 	# Save in a text file
-	with open("AVA 2.0 challenges.txt", "w", encoding='utf-8') as outfile:
+	with open("AVA 2.0/AVA 2.0 challenges.txt", "w", encoding='utf-8') as outfile:
 		for key, value in new_challenge_dict.items():
 			outfile.write(str(key) + " " + value + "\n")
 	'''
@@ -171,10 +172,9 @@ def scrapeChallengePage(url, stop_id):
 
 		# Create string
 		challenge_data = ' '.join(challenge_data)
-		print(challenge_data)
 
 		# Append to text file
-		with('AVA (All)/Challenge Info.txt', "a") as outfile:
+		with open('AVA (All)/Challenge Info.txt', "a") as outfile:
 			outfile.write(challenge_data + '\n')
 
 	return
@@ -206,7 +206,7 @@ def extractRules(url):
 
 			rule_name = rule.text
 
-			rules_dict[rule_id] = rule_name.replace('','_')
+			rules_dict[rule_id] = rule_name.replace(' ','_')
 
 	# Write to text file
 	with open("AVA (All)/AVA Rules.txt", "w", encoding='utf-8') as outfile:
@@ -217,11 +217,10 @@ def extractRules(url):
 #ava_last_id = getLastChallenge()
 
 # Scrape Challenge Page
-scrapeChallengePage(url, 1080)
+#scrapeChallengePage(challenge_url, 1080)
 
 # Scrape Gallery Page
-#url = 'http://dpchallenge.com/photo_gallery.php'
-#scrapeGalleryPage(url)
+#scrapeGalleryPage(gallery_url)
 
 # Scrape Challenge Page
-#extractRules(url)
+extractRules(challenge_url)
