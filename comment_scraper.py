@@ -4,6 +4,44 @@ from bs4 import BeautifulSoup
 
 import re
 import pickle
+import itertools
+import codecs
+
+def cleanComments(comments):
+
+	clean_comments = []
+
+	for comment in comments:
+
+		# Extract again (JUST IN CASE)
+		comment = BeautifulSoup(comment, "lxml").get_text()
+
+		# Some comments are edited and the datastamp of edited message is extracted
+		comment = re.sub(r"Message edited by author .*", '', comment)
+
+		# Some comments have urls
+		comment = re.sub(r'^https?:\/\/.*[\r\n]*', '', comment, flags=re.MULTILINE)
+
+		# Word Standardizing (Ex. Looooolll should be Looll)
+		comment = ''.join(''.join(s)[:2] for _, s in itertools.groupby(comment))
+
+		# Remove Encodings
+		comment = re.sub(r'\\\\', r'\\', comment)
+		comment = re.sub(r'\\x\w{2,2}',' ', comment)
+		comment = re.sub(r'\\u\w{4,4}', ' ', comment)
+		comment = re.sub(r'\\n', '.', comment)
+
+		# Remove carraige returns character
+		comment = ' '.join(comment.splitlines())
+
+		#Remove Unicode characters
+		comment = codecs.decode(comment, 'unicode-escape')
+		comment = ''.join([i if ord(i) < 128 else '' for i in comment])
+
+		clean_comments.append(comment)
+
+	return clean_comments
+
 
 def getComments(soup_comments):
 
@@ -33,18 +71,9 @@ def getComments(soup_comments):
 		
 		# Get the comment here
 		comment = row_data.text
-
-		# Some comments are edited and the datastamp of edited message is extracted
-		#comment = re.sub(r"Message edited by author .*", '', comment)
-
-		# Some comments have urls
-		#comment = re.sub(r'^https?:\/\/.*[\r\n]*', '', comment, flags=re.MULTILINE)
 		
 		# Append the cleaned comment
 		image_comments.append(comment)
-
-	print(image_comments)
-	exit()
 
 	return image_comments
 
@@ -75,8 +104,9 @@ def getMetadata(soup_meta):
 
 def scraping():
 
-	# AVA Image URL
+	# AVA Image URL and text file
 	AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
+	TEXT_FILE_DIR = 'AVA 2.0 Comments/{}.txt'
 
 	# Load Pickle file
 	with open('first_half.txt','rb') as fh:
@@ -84,8 +114,9 @@ def scraping():
 
 	for image_id in image_id_list:
 
-		# Get the image page URL
+		# Get the image page URL and the text file
 		url = AVA_URL_FOR_ID.format(image_id)
+		file = TEXT_FILE_DIR.format(image_id)
 
 		# Extract Page
 		page_extract = extractPage(url)
@@ -97,9 +128,15 @@ def scraping():
 		image_meta = ' '.join(image_meta) + '\n'
 
 		# Get image comments
-		#image_comments = getComments(page_extract)
+		image_comments = getComments(page_extract)
 
 		# Clean image comments
+		clean_comments = cleanComments(image_comments)
+
+		# Store in 'Image_ID.txt'. One line = One comment
+		with open(file, 'w') as write_file:
+			for comment in clean_comments:
+				write_file.write(comment + '\n')
 
 		# Append to 'AVA 2.0 Semantics'
 		#with open('AVA 2.0 Image Semantics.txt', 'a') as append_file:
