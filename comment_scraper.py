@@ -140,7 +140,7 @@ def scraping(EMERGENCY):
 		# Slice the array
 		image_id_list = image_id_list[last_image_index:]
 
-	for image_id in image_id_list:
+	for i,image_id in enumerate(image_id_list):
 
 		# Get the image page URL and the text file
 		url = AVA_URL_FOR_ID.format(image_id)
@@ -169,6 +169,8 @@ def scraping(EMERGENCY):
 		# Append to 'AVA 2.0 Semantics'
 		with open('AVA 2.0 Image Semantics.txt', 'a') as append_file:
 			append_file.write(image_meta)
+
+		print("\n\nEXTRACTION PROGRESS: %d/%d \n\n" % (i+1, len(image_id_list)))
 
 	return
 
