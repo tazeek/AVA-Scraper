@@ -1,3 +1,5 @@
+from utils import extractPage
+
 from bs4 import BeautifulSoup
 
 import urllib.request
@@ -8,28 +10,6 @@ import time
 # Variables
 challenge_url = 'http://dpchallenge.com/challenge_history.php?order_by=0d&open=1&member=1&speed=1&invitational=1&show_all=1'
 gallery_url = 'http://dpchallenge.com/photo_gallery.php'
-
-# Page extract
-def extractPage(url):
-
-	# Define header
-	headers = {
-    	'User-Agent': 'Tazeek',
-    	'From': 'tazeek.rakib@gmail.com'  # This is another valid field
-	}
-
-	# Load using requests
-	requests_page = requests.get(url, headers=headers)
-
-	# Sleep for a minute
-	print("SLEEPING NOW (60 seconds)")
-	print(time.strftime("%H:%M:%S"),"\n")
-	time.sleep(60)
-
-	# HTML Extraction using BeautifulSoup
-	page_extract = BeautifulSoup(requests_page.text, 'lxml')
-
-	return page_extract
 
 # Get the latest challenge number from AVA 1.0
 def getLastChallenge():

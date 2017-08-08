@@ -1,3 +1,5 @@
+from utils import extractPage
+
 from bs4 import BeautifulSoup
 from os import listdir
 
@@ -5,22 +7,6 @@ import urllib.request
 import requests
 import re
 import time
-
-def extractPage(url):
-
-	# Define header
-	headers = {
-    	'User-Agent': 'Tazeek',
-    	'From': 'tazeek.rakib@gmail.com'  # This is another valid field
-	}
-
-	# Load using requests
-	requests_gallery = requests.get(url)
-
-	# HTML Extraction using BeautifulSoup
-	page_extract = BeautifulSoup(requests_gallery.text, 'lxml')
-
-	return page_extract
 
 def getComments(soup_comments):
 
