@@ -7,6 +7,22 @@ import pickle
 import itertools
 import codecs
 
+EMERGENCY = False
+
+def emergencyCase():
+
+	# Find last line
+	last_line = ''
+
+	# Read the last line of 'AVA 2.0' text file
+	with open('AVA 2.0 Image Semantics.txt') as file:
+		last_line = list(file)[-1].split()
+
+	# Get the last image id scraped
+	last_image_id = last_line[0]
+
+	return last_image_id
+
 def cleanComments(comments):
 
 	clean_comments = []
@@ -102,15 +118,27 @@ def getMetadata(soup_meta):
 
 	return semantic_list
 
-def scraping():
+def scraping(EMERGENCY):
 
 	# AVA Image URL and text file
 	AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
-	TEXT_FILE_DIR = 'AVA 2.0 Comments/{}.txt'
+	TEXT_FILE_DIR = 'AVA 2.0 Comments/{}.txt' 
 
 	# Load Pickle file
 	with open('first_half.txt','rb') as fh:
 		image_id_list = pickle.load(fh)
+
+	# In case of emergency, load everything from scratch
+	if EMERGENCY:
+
+		# Get image id of the last image scraped
+		last_image_id = emergencyCase()
+
+		# Get index of the last image
+		last_image_index = image_id_list.index(last_image_id)
+
+		# Slice the array
+		image_id_list = image_id_list[last_image_index:]
 
 	for image_id in image_id_list:
 
@@ -139,12 +167,10 @@ def scraping():
 				write_file.write(comment + '\n')
 
 		# Append to 'AVA 2.0 Semantics'
-		#with open('AVA 2.0 Image Semantics.txt', 'a') as append_file:
-		#	append_file.write(image_meta)
-
-		exit()
+		with open('AVA 2.0 Image Semantics.txt', 'a') as append_file:
+			append_file.write(image_meta)
 
 	return
 
 # Scraping starts here
-scraping()
+scraping(EMERGENCY)
