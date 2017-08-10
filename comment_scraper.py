@@ -138,7 +138,7 @@ def scraping(EMERGENCY, FILE):
 		# Get image id of the last image scraped
 		last_image_id = emergencyCase()
 
-		# Get index of the last image
+		# Get index of the last image and move to next index
 		last_image_index = image_id_list.index(last_image_id) + 1
 
 		# Slice the array
