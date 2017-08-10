@@ -57,5 +57,3 @@ def saveTextFiles():
 
 	with open("second_half.txt", "wb") as sh:
 		pickle.dump(second_half, sh)
-
-saveTextFiles() 

@@ -7,7 +7,10 @@ import pickle
 import itertools
 import codecs
 
-EMERGENCY = False
+# Variables in cases of emergency
+# NOTE: When using PC, use 'first_half.txt' and for laptop, use 'second_half.txt'
+EMERGENCY = True
+FILE = 'second_half.txt'
 
 def emergencyCase():
 
@@ -43,6 +46,7 @@ def cleanComments(comments):
 
 		# Remove Encodings
 		comment = re.sub(r'\\\\', r'\\', comment)
+		comment = re.sub(r'\\', ' ', comment)
 		comment = re.sub(r'\\x\w{2,2}',' ', comment)
 		comment = re.sub(r'\\u\w{4,4}', ' ', comment)
 		comment = re.sub(r'\\n', '.', comment)
@@ -118,14 +122,14 @@ def getMetadata(soup_meta):
 
 	return semantic_list
 
-def scraping(EMERGENCY):
+def scraping(EMERGENCY, FILE):
 
 	# AVA Image URL and text file
 	AVA_URL_FOR_ID = 'http://www.dpchallenge.com/image.php?IMAGE_ID={}'
 	TEXT_FILE_DIR = 'AVA 2.0 Comments/{}.txt' 
 
 	# Load Pickle file
-	with open('first_half.txt','rb') as fh:
+	with open(FILE,'rb') as fh:
 		image_id_list = pickle.load(fh)
 
 	# In case of emergency, load everything from scratch
@@ -135,7 +139,7 @@ def scraping(EMERGENCY):
 		last_image_id = emergencyCase()
 
 		# Get index of the last image
-		last_image_index = image_id_list.index(last_image_id)
+		last_image_index = image_id_list.index(last_image_id) + 1
 
 		# Slice the array
 		image_id_list = image_id_list[last_image_index:]
@@ -175,4 +179,4 @@ def scraping(EMERGENCY):
 	return
 
 # Scraping starts here
-scraping(EMERGENCY)
+scraping(EMERGENCY, FILE)
