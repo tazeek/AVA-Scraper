@@ -1,6 +1,6 @@
 # HINT: Use Image ID as foreign key
 SEMANTICS_FILE = 'test.txt'
-AVA_FILE = 'AVA 2.0.txt'
+AVA_FILE = 'dummy.txt'
 
 # Load 'AVA 2.0 Image Semantics.txt' Dummy: test.txt
 # Store as follows: 'Image ID: [Tags]'
@@ -33,10 +33,24 @@ for key, value in image_semantics_dict.items():
 
 		image_semantics_dict[key] = value
 
-# Create new string
+# Open 'AVA 2.0.txt' Dummy: dummy.txt
+image_data_dict = {}
 
-# Open 'AVA 2.0'
+with open(AVA_FILE) as file:
+	for line in file:
+		data = line.split()
+
+		# Get key (id) and value (index number + ratings + challenge id)
+		image_id = data[1]
+		value = [data[0]] + data[2:]
+		image_data_dict[image_id] = value
 
 # Semantic Tag IDs goes before challenge ID (Index -1)
+for key, value in image_semantics_dict.items():
+	semantic_data = value
+	image_data = image_data_dict[key]
+
+	new_string = [image_data[0], key] + image_data[1:-1] + semantic_data + [image_data[-1]]
+	image_data_dict[key] = new_string
 
 # Store again (Follow AVA 1.0 format)
