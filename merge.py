@@ -25,6 +25,13 @@ for key, value in image_semantics_dict.items():
 		max_tags = len(value)
 
 # Append 0s wherever necessary
+for key, value in image_semantics_dict.items():
+
+	if len(value) < max_tags:
+		concat_val = max_tags - len(value)
+		value += list('0' * concat_val)
+
+		image_semantics_dict[key] = value
 
 # Create new string
 
