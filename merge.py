@@ -17,7 +17,12 @@ with open(SEMANTICS_FILE) as file:
 		image_semantics_dict[image_id] = image_tags
 
 # Find the maximum number of tags
-max_tags = None
+max_tags = 0
+
+for key, value in image_semantics_dict.items():
+	
+	if max_tags < len(value):
+		max_tags = len(value)
 
 # Append 0s wherever necessary
 
