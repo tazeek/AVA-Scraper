@@ -46,11 +46,16 @@ with open(AVA_FILE) as file:
 		image_data_dict[image_id] = value
 
 # Semantic Tag IDs goes before challenge ID (Index -1)
+ava_image_data = []
+
 for key, value in image_semantics_dict.items():
 	semantic_data = value
 	image_data = image_data_dict[key]
 
 	new_string = [image_data[0], key] + image_data[1:-1] + semantic_data + [image_data[-1]]
-	image_data_dict[key] = new_string
+	ava_image_data.append(' '.join(new_string))
 
 # Store again (Follow AVA 1.0 format)
+with open(AVA_FILE, 'w') as file:
+	for data in ava_image_data:
+		file.write(data + '\n')
