@@ -5,7 +5,7 @@
 
 **AVA: A Large-Scale Database for Aesthetic Visual Analysis**
 
-The AVA dataset was released in 2012 for conducting research on image aesthetics. The dataset consists of over 250,000 images. <br>
+The AVA dataset was released in 2012 for conducting research on image aesthetics. The dataset consists of over 250,000 images.
 The images consists of number of votes for ratings (1-10), semantic tags, and the challenges it is associated to. <br>
 PAPER: **[AVA: A Large-Scale Database for Aesthetic Visual Analysis](http://refbase.cvc.uab.es/files/MMP2012a.pdf)**
 
@@ -25,6 +25,8 @@ Images after 2012 are not scraped and are still available on dpchallenge.com. Th
 
 - [Others](https://github.com/tazeek/AVA-Scraper/blob/master/other_scraper.py): Used for extracting new challenges and existing rules
 
+The new data is stored under the name of **AVA 2.0** 
+
 ### How does it work?
 
 Scraping takes place in the following order:
@@ -35,6 +37,8 @@ Scraping takes place in the following order:
 
 3. The IDs of each extracted image is saved. Then, looping each image at a time, the comments and semantic tags are extracted.
 
-**As of 11th August, 2017**: 81,986 new images have been extracted. This only includes images **WITH** ratings. Comments are optional.
+**As of 11th August, 2017**: 81,986 new images have been extracted. This only includes images **WITH** ratings. <br>
 
-NOTE: There is always a delay of 60s, as per the requirements in [robots.txt](http://dpchallenge.com/robots.txt)
+NOTE: There is always a delay of 60s, as per the requirements in [robots.txt](http://dpchallenge.com/robots.txt). If you get blocked, it will take around a week to get unbarred. <br>
+
+An emergency function has been added in case of issues, such as the site's server inactive or loss of internet connection. The function will carry on scraping from where it left off :)
